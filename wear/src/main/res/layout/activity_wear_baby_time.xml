@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/box"
+    android:keepScreenOn="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    layout_box="all"
+    tools:context=".WearBabyMode"
+    tools:deviceIds="wear">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dip">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:drawableLeft="@drawable/baby"
+            android:drawablePadding="8dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dip"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/directions" />
+    </LinearLayout>
+</android.support.wearable.view.BoxInsetLayout>
+
