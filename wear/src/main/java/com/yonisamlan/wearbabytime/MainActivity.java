@@ -2,26 +2,36 @@ package com.yonisamlan.wearbabytime;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.StringRes;
+import android.text.format.Time;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity implements GestureDetector.OnGestureListener {
     private static final String TAG = "babytime";
     private static final long TOAST_RATE_LIMIT_MILLIS = 3500; // AOSP's Toast.LENGTH_LONG
     private static final long MAX_UNLOCK_GESTURE_TIME_MILLIS = TimeUnit.SECONDS.toMillis(5);
+    private static final String TIME_FORMAT = "%H:%M";
+    private static final Time TIME = new Time();
 
+    private Handler mClockHandler;
     private GestureDetector mGestureDetector;
     private long mLastNotificationTimeMillis;
     private long mUnlockGestureStartedMillis;
     private int mUnlockStepCount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,23 @@ public class MainActivity extends Activity implements GestureDetector.OnGestureL
                 return true;
             }
         });
+
+        // Update the clock every minute
+        final TextView timeView = (TextView) findViewById(R.id.time);
+
+        mClockHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (!isFinishing() && timeView != null) {
+                    TIME.setToNow();
+                    long millisUntilNextMinute = (60 - TIME.second) * 1000;
+                    mClockHandler.sendEmptyMessageDelayed(0, millisUntilNextMinute);
+                    ((TextView) timeView).setText(TIME.format(TIME_FORMAT));
+                }
+            }
+        };
+
+        mClockHandler.sendEmptyMessage(0);
     }
 
     @Override

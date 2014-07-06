@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:textAppearanceLarge">@style/AppTextAppearanceLarge</item>
+        <item name="android:textAppearanceMedium">@style/AppTextAppearanceMedium</item>
+    </style>
+
+    <style name="AppTextAppearanceLarge" parent="@android:style/TextAppearance.Large">
+        <item name="android:textColor">@android:color/secondary_text_dark</item>
+    </style>
+
+    <style name="AppTextAppearanceMedium" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@android:color/secondary_text_dark</item>
+    </style>
+</resources>
