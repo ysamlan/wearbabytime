@@ -1,6 +1,9 @@
 package com.yonisamlan.wearbabytime;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,11 +18,9 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends Activity implements GestureDetector.OnGestureListener {
+public final class MainActivity extends Activity implements GestureDetector.OnGestureListener {
     private static final String TAG = "babytime";
     private static final long TOAST_RATE_LIMIT_MILLIS = 3500; // AOSP's Toast.LENGTH_LONG
     private static final long MAX_UNLOCK_GESTURE_TIME_MILLIS = TimeUnit.SECONDS.toMillis(5);
@@ -31,31 +32,22 @@ public class MainActivity extends Activity implements GestureDetector.OnGestureL
     private long mLastNotificationTimeMillis;
     private long mUnlockGestureStartedMillis;
     private int mUnlockStepCount;
-
+    BroadcastReceiver mScreenOnReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wear_baby_time);
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = 0.0f;
-        getWindow().setAttributes(lp);
-        mGestureDetector = new GestureDetector(this, this);
-        final ViewGroup box = (ViewGroup) findViewById(R.id.box);
-        box.setClickable(true);
-        box.setFocusable(true);
+        dimScreen();
+        interceptTouchEvents();
+        setClockUpdates();
+        setUpScreenOnReceiver();
+    }
 
-        box.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Don't allow the system to intercept right-swipes to exit the app.
-                box.requestDisallowInterceptTouchEvent(true);
-                mGestureDetector.onTouchEvent(event);
-                return true;
-            }
-        });
-
-        // Update the clock every minute
+    /**
+     * Set the clock to update the displayed time every minute.
+     */
+    private void setClockUpdates() {
         final TextView timeView = (TextView) findViewById(R.id.time);
 
         mClockHandler = new Handler() {
@@ -71,6 +63,46 @@ public class MainActivity extends Activity implements GestureDetector.OnGestureL
         };
 
         mClockHandler.sendEmptyMessage(0);
+    }
+
+    /**
+     * Set the screen brightness to its minimum.
+     */
+    private void dimScreen() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = 0.0f;
+        getWindow().setAttributes(lp);
+    }
+
+    /**
+     * Set up our swipe listener, and don't let the system do its usual swipe-right-to-exit.
+     */
+    private void interceptTouchEvents() {
+        mGestureDetector = new GestureDetector(this, this);
+        final ViewGroup box = (ViewGroup) findViewById(R.id.box);
+        box.setClickable(true);
+        box.setFocusable(true);
+
+        box.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Don't allow the system to intercept right-swipes to exit the app.
+                box.requestDisallowInterceptTouchEvent(true);
+                mGestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Set up a receiver that can restart the app if the palm-over-screen gesture is activated.
+     * There's no good way I've found to intercept that gesture and prevent it; all we can do is
+     * kick back into the app after the screen is turned on again.
+     */
+    private void setUpScreenOnReceiver() {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        mScreenOnReceiver = new ScreenReceiver();
+        registerReceiver(mScreenOnReceiver, filter);
     }
 
     @Override
@@ -137,13 +169,22 @@ public class MainActivity extends Activity implements GestureDetector.OnGestureL
         } else if (vertical && !swipeUp && mUnlockStepCount >= 2) { // downswipe after both ups
             mUnlockStepCount++;
             if (mUnlockStepCount == 4) {
-                Toast.makeText(this, R.string.toast_adult_verified, Toast.LENGTH_LONG).show();
-                finish();
+                unlock();
             }
         } else { // out of order or horizontal swipes
             lock(R.string.toast_babylike_swiping);
         }
 
         return true;
+    }
+
+    private void unlock() {
+        Toast.makeText(this, R.string.toast_adult_verified, Toast.LENGTH_LONG).show();
+
+        if (mScreenOnReceiver != null) {
+            unregisterReceiver(mScreenOnReceiver);
+        }
+
+        finish();
     }
 }

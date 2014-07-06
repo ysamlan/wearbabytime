@@ -15,6 +15,9 @@ Any other types of touches will keep the watch locked and just show a message:
 
 <img alt="✖ BABY-LIKE TAPPING DETECTED" src="https://raw.githubusercontent.com/ysamlan/wearbabytime/master/artwork/screenshots/framed/babytime_denied_framed.png" title="Nice try, tiny human." width="218" height="218" />
 
+The screen can still be turned off with the palm-over-screen gesture, but Baby Time will restart as
+soon as the screen is turned on again.
+
 # Getting the app
 
 To run the app, install the release application from [Google Play]
