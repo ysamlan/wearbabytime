@@ -16,32 +16,52 @@
         android:orientation="vertical"
         android:padding="8dip">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:drawableLeft="@drawable/baby"
-            android:drawablePadding="8dip"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/title" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baby" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:fontFamily="sans-serif-light"
+                tools:text="12/30/2014" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="48sp"
+            android:textSize="40sp"
             android:fontFamily="sans-serif-light"
-            android:padding="8dip"
-            tools:text="23:37" />
+            android:paddingTop="8dip"
+            android:paddingBottom="8dip"
+            tools:text="10:58 AM" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingBottom="8dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:fontFamily="sans-serif-light"
             android:text="@string/directions" />
     </LinearLayout>
 </android.support.wearable.view.BoxInsetLayout>

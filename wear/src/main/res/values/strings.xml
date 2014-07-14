@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Baby Time</string>
-    <string name="directions">Swipe up twice and then down twice to exit.</string>
-    <string name="title">Baby Time On</string>
+    <string name="directions">Swipe ⇧,⇧,⇩,⇩ to exit.</string>
+    <string name="title">Baby Time on</string>
     <string name="toast_adult_verified">✔ Motor control verified. WELCOME ADULT HUMAN</string>
     <string name="toast_babylike_long_press">✖ BABY-LIKE PRESSING DETECTED</string>
     <string name="toast_babylike_swiping">✖ BABY-LIKE SWIPING DETECTED</string>
